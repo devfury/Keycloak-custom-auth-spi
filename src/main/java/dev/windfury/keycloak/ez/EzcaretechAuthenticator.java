@@ -1,5 +1,6 @@
 package dev.windfury.keycloak.ez;
 
+import dev.windfury.keycloak.bizbox.dto.PersonName;
 import dev.windfury.keycloak.bizbox.dto.User;
 import dev.windfury.keycloak.bizbox.dto.UserMemberDTO;
 import dev.windfury.keycloak.bizbox.dto.UserResponseDTO;
@@ -65,9 +66,31 @@ public class EzcaretechAuthenticator implements Authenticator {
                 userModel.setFirstName(user.getFirstName());
                 userModel.setLastName(user.getLastName());
                 userModel.setEmail(user.getEmail());
-                userModel.setSingleAttribute("mobile-tel-number", user.getMobileTelephoneNumber());
-                userModel.setSingleAttribute("inner-tel-number", user.getInnerTelephoneNumber());
-                userModel.setSingleAttribute("fax-tel-number", user.getFaxTelephoneNumber());
+                userModel.setSingleAttribute("userSeq", user.getUserSeq());
+                userModel.setSingleAttribute("empSeq", user.getEmployeeSeq());
+                userModel.setSingleAttribute("birthDay", user.getBirthDay());
+                userModel.setSingleAttribute("gender", user.getGender());
+                userModel.setSingleAttribute("mobileTelNumber", user.getMobileTelephoneNumber());
+                userModel.setSingleAttribute("innerTelNumber", user.getInnerTelephoneNumber());
+                userModel.setSingleAttribute("faxTelNumber", user.getFaxTelephoneNumber());
+                userModel.setSingleAttribute("positionCode", user.getPositionCode());
+                userModel.setSingleAttribute("positionName", user.getPositionName());
+                userModel.setSingleAttribute("dutyCode", user.getDutyCode());
+                userModel.setSingleAttribute("dutyName", user.getDutyName());
+                userModel.setSingleAttribute("mainWork", user.getMainWork());
+                userModel.setSingleAttribute("picFileId", user.getPictureFileId());
+                userModel.setSingleAttribute("groupSeq", user.getGroupSeq());
+                userModel.setSingleAttribute("bizSeq", user.getBizSeq());
+                userModel.setSingleAttribute("compSeq", user.getCompanySeq());
+                userModel.setSingleAttribute("compName", user.getCompanyName());
+                userModel.setSingleAttribute("deptSeq", user.getDepartmentSeq());
+                userModel.setSingleAttribute("deptName", user.getDepartmentName());
+                userModel.setSingleAttribute("deptAddr", user.getDepartmentAddress());
+                userModel.setSingleAttribute("deptDetailAddr", user.getDepartmentDetailAddress());
+                userModel.setSingleAttribute("deptZipCode", user.getDepartmentZipCode());
+                userModel.setSingleAttribute("deptDepth", user.getDepartmentDepth() == null ? null : user.getDepartmentDepth().toString());
+                userModel.setSingleAttribute("parentSeq", user.getParentSeq());
+                userModel.setSingleAttribute("pathName", user.getPathName());
                 userModel.setEnabled(true);
                 userModel.setEmailVerified(true);
                 for (String role : user.getRoles()) {
@@ -124,69 +147,42 @@ public class EzcaretechAuthenticator implements Authenticator {
             return null;
         }
 
-        String[] nameParts = splitName(userMember.getName());
-        String firstName = nameParts[0];
-        String lastName = nameParts[1];
+        PersonName personName = userMember.getPersonName();
 
-        return new User(
+        User user = new User(
             userMember.getLoginId(),
-            firstName,
-            lastName,
-            buildEmail(userMember),
-            userMember.getMobileTelephoneNumber(),
-            userMember.getTelephoneNumber(),
-            userMember.getFaxNumber(),
-            Collections.singletonList("default-roles-ezcaretech"));
-    }
+            personName.firstName(),
+            personName.lastName(),
+            userMember.getEmail(),
+            Collections.singletonList("default-roles-ezcaretech")
+        );
 
-    private String buildEmail(UserMemberDTO userMember) {
-        String emailAddr = userMember.getEmailAddr();
-        String emailDomain = userMember.getEmailDomain();
-        if (emailAddr == null || emailAddr.isBlank()) {
-            return emailAddr;
-        }
-        if (emailDomain == null || emailDomain.isBlank()) {
-            return emailAddr;
-        }
-        return emailAddr + "@" + emailDomain;
-    }
-
-    private String[] splitName(String displayName) {
-        if (displayName == null) {
-            return new String[]{"", ""};
-        }
-        String trimmed = displayName.trim();
-        if (trimmed.isEmpty()) {
-            return new String[]{"", ""};
-        }
-        int firstCodePoint = trimmed.codePointAt(0);
-        if (isHangul(firstCodePoint)) {
-            String lastName = new String(Character.toChars(firstCodePoint));
-            String remaining = trimmed.substring(Character.charCount(firstCodePoint)).trim();
-            return new String[]{remaining, lastName};
-        }
-        String[] parts = trimmed.split("\\s+");
-        if (parts.length == 1) {
-            return new String[]{parts[0], ""};
-        }
-        String lastName = parts[parts.length - 1];
-        StringBuilder givenName = new StringBuilder();
-        for (int i = 0; i < parts.length - 1; i++) {
-            if (i > 0) {
-                givenName.append(' ');
-            }
-            givenName.append(parts[i]);
-        }
-        return new String[]{givenName.toString(), lastName};
-    }
-
-    private boolean isHangul(int codePoint) {
-        Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
-        return block == Character.UnicodeBlock.HANGUL_SYLLABLES
-            || block == Character.UnicodeBlock.HANGUL_JAMO
-            || block == Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A
-            || block == Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_B
-            || block == Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO;
+        user.setUserSeq(userMember.getSeq());
+        user.setEmployeeSeq(userMember.getEmployeeSeq());
+        user.setBirthDay(userMember.getBirthDay());
+        user.setGender(userMember.getGbn());
+        user.setMobileTelephoneNumber(userMember.getMobileTelephoneNumber());
+        user.setInnerTelephoneNumber(userMember.getTelephoneNumber());
+        user.setFaxTelephoneNumber(userMember.getFaxNumber());
+        user.setPositionCode(userMember.getPositionCode());
+        user.setPositionName(userMember.getPositionCodeName());
+        user.setDutyCode(userMember.getDutyCode());
+        user.setDutyName(userMember.getDutyCodeName());
+        user.setMainWork(userMember.getMainWork());
+        user.setPictureFileId(userMember.getPictureFileId());
+        user.setGroupSeq(userMember.getGroupSeq());
+        user.setBizSeq(userMember.getBizSeq());
+        user.setCompanySeq(userMember.getCompanySeq());
+        user.setCompanyName(userMember.getCompanyName());
+        user.setDepartmentSeq(userMember.getDepartmentSeq());
+        user.setDepartmentName(userMember.getDepartmentName());
+        user.setDepartmentAddress(userMember.getDepartmentAddress());
+        user.setDepartmentDetailAddress(userMember.getDepartmentDetailAddress());
+        user.setDepartmentZipCode(userMember.getDepartmentZipCode());
+        user.setDepartmentDepth(userMember.getDepth());
+        user.setParentSeq(userMember.getParentSeq());
+        user.setPathName(userMember.getPathName());
+        return user;
     }
 
     @Override

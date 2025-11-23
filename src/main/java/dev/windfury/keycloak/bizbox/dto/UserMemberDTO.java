@@ -1,5 +1,6 @@
 package dev.windfury.keycloak.bizbox.dto;
 
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -149,4 +150,52 @@ public class UserMemberDTO {
     @JsonProperty("telNum")
     @JsonPropertyDescription("전화번호")
     private String telephoneNumber;
+
+    public String getEmail() {
+        if (emailAddr == null || emailAddr.isBlank()) {
+            return emailAddr;
+        }
+        if (emailDomain == null || emailDomain.isBlank()) {
+            return emailAddr;
+        }
+        return emailAddr + "@" + emailDomain;
+    }
+
+    public PersonName getPersonName() {
+        if (name == null) {
+            return new PersonName("", "");
+        }
+        String trimmed = name.trim();
+        if (trimmed.isEmpty()) {
+            return new PersonName("", "");
+        }
+        int firstCodePoint = trimmed.codePointAt(0);
+        if (isHangul(firstCodePoint)) {
+            String lastName = new String(Character.toChars(firstCodePoint));
+            String remaining = trimmed.substring(Character.charCount(firstCodePoint)).trim();
+            return new PersonName(remaining, lastName);
+        }
+        String[] parts = trimmed.split("\\s+");
+        if (parts.length == 1) {
+            return new PersonName(parts[0], "");
+        }
+        String lastName = parts[parts.length - 1];
+        StringBuilder givenName = new StringBuilder();
+        for (int i = 0; i < parts.length - 1; i++) {
+            if (i > 0) {
+                givenName.append(' ');
+            }
+            givenName.append(parts[i]);
+        }
+        return new PersonName(givenName.toString(), lastName);
+    }
+    
+    private boolean isHangul(int codePoint) {
+        Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
+        return block == Character.UnicodeBlock.HANGUL_SYLLABLES
+            || block == Character.UnicodeBlock.HANGUL_JAMO
+            || block == Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_A
+            || block == Character.UnicodeBlock.HANGUL_JAMO_EXTENDED_B
+            || block == Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO;
+    }
 }

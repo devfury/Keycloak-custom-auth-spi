@@ -5,12 +5,12 @@
 - `src/main/java/com/example/keycloak/dto` contains Lombok-backed DTOs that mirror external API payloads.
 - `src/main/resources` is reserved for Keycloak descriptors (e.g., `META-INF/services/org.keycloak.authentication.AuthenticatorFactory`) when new providers are added.
 - `src/static` stores admin-console walkthrough screenshots referenced by `README.md`.
-- `target/` is Maven's output directory; the built provider JAR is `target/keycloak.custom-auth-0.0.1.jar`.
+- `target/` is Maven's output directory; the built provider JAR is `target/keycloak.auth-0.0.2.jar`.
 
 ## Build, Test, and Development Commands
 - `./mvnw clean package` compiles against Java 17 and produces the deployable SPI JAR.
 - `./mvnw clean package -DskipTests` speeds up packaging when test fixtures are unavailable.
-- `cp target/keycloak.custom-auth-0.0.1.jar $KEYCLOAK_HOME/providers/ && $KEYCLOAK_HOME/bin/kc.sh build` installs the provider into a local Keycloak distribution.
+- `cp target/keycloak.auth-0.0.2.jar $KEYCLOAK_HOME/providers/ && $KEYCLOAK_HOME/bin/kc.sh build` installs the provider into a local Keycloak distribution.
 - Use `$KEYCLOAK_HOME/bin/kc.sh start --http-port=8080` to spin up Keycloak for manual verification.
 
 ## Coding Style & Naming Conventions

@@ -57,7 +57,7 @@ When adding a new authenticator, you **must** register its factory class in this
 .\mvnw.cmd clean package -DskipTests
 
 # Output JAR location
-# target/keycloak.auth-0.0.1.jar
+# target/keycloak.auth-0.0.2.jar
 ```
 
 ### Testing
@@ -69,7 +69,7 @@ When adding a new authenticator, you **must** register its factory class in this
 ### Deployment to Keycloak
 ```bash
 # Copy provider JAR to Keycloak installation (adjust paths for Windows)
-cp target/keycloak.auth-0.0.1.jar $KEYCLOAK_HOME/providers/
+cp target/keycloak.auth-0.0.2.jar $KEYCLOAK_HOME/providers/
 
 # Rebuild Keycloak to register the provider
 $KEYCLOAK_HOME/bin/kc.bat build
