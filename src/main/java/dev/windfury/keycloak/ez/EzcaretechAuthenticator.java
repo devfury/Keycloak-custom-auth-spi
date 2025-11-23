@@ -69,6 +69,7 @@ public class EzcaretechAuthenticator implements Authenticator {
                 userModel.setSingleAttribute("inner-tel-number", user.getInnerTelephoneNumber());
                 userModel.setSingleAttribute("fax-tel-number", user.getFaxTelephoneNumber());
                 userModel.setEnabled(true);
+                userModel.setEmailVerified(true);
                 for (String role : user.getRoles()) {
                     userModel.grantRole(context.getRealm().getRole(role));
                 }
