@@ -24,8 +24,6 @@ public class User {
     private String employeeSeq;
     /** 생년월일 */
     private String birthDay;
-    /** 구분 */
-    private String gender;
     /** 휴대전화 번호 */
     private String mobileTelephoneNumber;
     /** 내선 번호 */

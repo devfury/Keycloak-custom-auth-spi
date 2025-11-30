@@ -69,7 +69,6 @@ public class EzcaretechAuthenticator implements Authenticator {
                 userModel.setSingleAttribute("userSeq", user.getUserSeq());
                 userModel.setSingleAttribute("empSeq", user.getEmployeeSeq());
                 userModel.setSingleAttribute("birthDay", user.getBirthDay());
-                userModel.setSingleAttribute("gender", user.getGender());
                 userModel.setSingleAttribute("mobileTelNumber", user.getMobileTelephoneNumber());
                 userModel.setSingleAttribute("innerTelNumber", user.getInnerTelephoneNumber());
                 userModel.setSingleAttribute("faxTelNumber", user.getFaxTelephoneNumber());
@@ -160,7 +159,6 @@ public class EzcaretechAuthenticator implements Authenticator {
         user.setUserSeq(userMember.getSeq());
         user.setEmployeeSeq(userMember.getEmployeeSeq());
         user.setBirthDay(userMember.getBirthDay());
-        user.setGender(userMember.getGbn());
         user.setMobileTelephoneNumber(userMember.getMobileTelephoneNumber());
         user.setInnerTelephoneNumber(userMember.getTelephoneNumber());
         user.setFaxTelephoneNumber(userMember.getFaxNumber());
