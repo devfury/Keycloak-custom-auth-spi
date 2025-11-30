@@ -1,5 +1,6 @@
 package dev.windfury.keycloak.ez;
 
+import dev.windfury.keycloak.bizbox.BizboxExternalApi;
 import dev.windfury.keycloak.bizbox.dto.PersonName;
 import dev.windfury.keycloak.bizbox.dto.User;
 import dev.windfury.keycloak.bizbox.dto.UserMemberDTO;
@@ -8,9 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
-import org.keycloak.credential.CredentialModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +48,7 @@ public class EzcaretechAuthenticator implements Authenticator {
         log.info("CUSTOMER PROVIDER authenticate");
         MultivaluedMap<String, String> formData = context.getHttpRequest().getDecodedFormParameters();
         String username = formData.getFirst("username");
-        String password = formData.getFirst("password");
+        String password = new String(Base64.getDecoder().decode(formData.getFirst("password")), StandardCharsets.UTF_8);
         log.debug("AUTHENTICATE custom provider: " + username);
 
         User user = null;
@@ -66,6 +69,7 @@ public class EzcaretechAuthenticator implements Authenticator {
                 userModel.setFirstName(user.getFirstName());
                 userModel.setLastName(user.getLastName());
                 userModel.setEmail(user.getEmail());
+                userModel.credentialManager().updateCredential(UserCredentialModel.password(password));
                 userModel.setSingleAttribute("userSeq", user.getUserSeq());
                 userModel.setSingleAttribute("empSeq", user.getEmployeeSeq());
                 userModel.setSingleAttribute("birthDay", user.getBirthDay());
@@ -121,7 +125,7 @@ public class EzcaretechAuthenticator implements Authenticator {
      * @throws IOException
      */
     private User callExternalApi(String username, String password) throws IOException {
-        EzcaretechExternalApi api = new EzcaretechExternalApi();
+        BizboxExternalApi api = new BizboxExternalApi();
         String token = api.getTokenAuthenticateToExternalApi(username, password);
         if(token == null) {
             return null;

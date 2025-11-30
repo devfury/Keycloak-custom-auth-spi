@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BizboxExternalApi {
-    public static final String API_URL = System.getenv("BIZBOX_API_URL");
+    public static final String API_URL = "https://gwa.ezcaretech.com";
     private final Logger log = LoggerFactory.getLogger(BizboxExternalApi.class);
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -47,12 +47,11 @@ public class BizboxExternalApi {
      * @throws IOException
      */
     public String getTokenAuthenticateToExternalApi(String username, String password) throws IOException {
-        String plainPassword = new String(Base64.getDecoder().decode(password), StandardCharsets.UTF_8);
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //Define url for the request
         HttpPost httpPost = new HttpPost(API_URL + "/gw/uat/uia/actionLogin.do");
 
-        Map<String, String> params = generateLoginParams(username, plainPassword);
+        Map<String, String> params = generateLoginParams(username, password);
         StringBuilder requestBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (requestBuilder.length() > 0) {

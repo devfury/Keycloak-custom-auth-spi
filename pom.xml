@@ -5,7 +5,7 @@
 
 	<groupId>dev.windfury</groupId>
 	<artifactId>keycloak</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<name>auth</name>
 	<description>Authentication Service Provider Interface (SPI) for Keycloak.</description>
 	<properties>
