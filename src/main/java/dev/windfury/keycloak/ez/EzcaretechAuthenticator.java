@@ -157,7 +157,10 @@ public class EzcaretechAuthenticator implements Authenticator {
             personName.firstName(),
             personName.lastName(),
             userMember.getEmail(),
-            Collections.singletonList("default-roles-ezcaretech")
+            Collections.singletonList(System.getenv("EZ_AUTH_DEFAULT_ROLE") != null
+                && !System.getenv("EZ_AUTH_DEFAULT_ROLE").isEmpty()
+                ? System.getenv("EZ_AUTH_DEFAULT_ROLE")
+                : "default-roles-ezcaretech")
         );
 
         user.setUserSeq(userMember.getSeq());
